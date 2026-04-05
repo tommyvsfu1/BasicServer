@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # 資料庫服務
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # 你的 Flask Server
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      # 關鍵：在 Docker 網路中，主機名稱要用服務名稱 "mongodb"
+      - MONGO_URI=mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
